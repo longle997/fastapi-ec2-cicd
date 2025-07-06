@@ -25,8 +25,44 @@ class ItemResponse(BaseModel):
     is_available: bool
 
 # In-memory storage (for demo purposes)
-items_db = []
-item_counter = 1
+tems_db = [
+    {
+        "id": 1,
+        "name": "Laptop",
+        "description": "High-performance laptop for development",
+        "price": 999.99,
+        "is_available": True
+    },
+    {
+        "id": 2,
+        "name": "Wireless Mouse",
+        "description": "Ergonomic wireless mouse with USB receiver",
+        "price": 29.99,
+        "is_available": True
+    },
+    {
+        "id": 3,
+        "name": "Mechanical Keyboard",
+        "description": "RGB mechanical keyboard with blue switches",
+        "price": 149.99,
+        "is_available": False
+    },
+    {
+        "id": 4,
+        "name": "Monitor",
+        "description": "27-inch 4K monitor with USB-C connectivity",
+        "price": 399.99,
+        "is_available": True
+    },
+    {
+        "id": 5,
+        "name": "Webcam",
+        "description": "1080p webcam with auto-focus",
+        "price": 79.99,
+        "is_available": True
+    }
+]
+item_counter = 6
 
 @app.get("/")
 async def root():
