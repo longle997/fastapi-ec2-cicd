@@ -25,7 +25,7 @@ class ItemResponse(BaseModel):
     is_available: bool
 
 # In-memory storage (for demo purposes)
-tems_db = [
+items_db = [
     {
         "id": 1,
         "name": "Laptop",
