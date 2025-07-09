@@ -9,7 +9,7 @@ env:
   AWS_REGION: ap-southeast-2
   ECS_SERVICE: Fastapi-task-ecs-ec2-service-h82aeda2
   ECS_CLUSTER: Fastapi-ECS-EC2
-  ECS_TASK_DEFINITION: Fastapi-task-ecs-ec2
+  ECS_TASK_DEFINITION: arn:aws:ecs:ap-southeast-2:440597412968:task-definition/Fastapi-task-ecs-ec2:5
   CONTAINER_NAME: fastapi-container-1  # as in your task definition
   DOCKER_IMAGE: longle997/test_project-fastapi-app:latest
 
