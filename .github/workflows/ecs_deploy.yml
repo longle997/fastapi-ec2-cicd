@@ -9,9 +9,9 @@ env:
   AWS_REGION: ap-southeast-2
   ECS_SERVICE: Fastapi-task-ecs-ec2-service-h82aeda2
   ECS_CLUSTER: Fastapi-ECS-EC2
-  ECS_TASK_DEFINITION: arn:aws:ecs:ap-southeast-2:440597412968:task-definition/Fastapi-task-ecs-ec2:5
-  CONTAINER_NAME: fastapi-container-1  # as in your task definition
-  DOCKER_IMAGE: longle997/test_project-fastapi-app:latest
+  ECS_TASK_DEFINITION: task_definition.json
+  CONTAINER_NAME: fastapi-container-1
+  DOCKER_IMAGE: longle997/test_project-fastapi-app
 
 jobs:
   deploy:
@@ -28,13 +28,29 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and push Docker image
+      run: |
+        # Build with commit SHA tag for versioning
+        docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} .
+        docker build -t ${{ env.DOCKER_IMAGE }}:latest .
+        
+        # Push both tags
+        docker push ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+        docker push ${{ env.DOCKER_IMAGE }}:latest
+
     - name: Fill in the new image in the ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: ${{ env.ECS_TASK_DEFINITION }}
         container-name: ${{ env.CONTAINER_NAME }}
-        image: ${{ env.DOCKER_IMAGE }}
+        image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
@@ -42,3 +58,11 @@ jobs:
         service: ${{ env.ECS_SERVICE }}
         cluster: ${{ env.ECS_CLUSTER }}
         task-definition: ${{ steps.task-def.outputs.task-definition }}
+        wait-for-service-stability: true
+
+    - name: Deployment Status
+      run: |
+        echo "🚀 Deployment completed successfully!"
+        echo "📦 Image: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}"
+        echo "🏷️  Service: ${{ env.ECS_SERVICE }}"
+        echo "🎯 Cluster: ${{ env.ECS_CLUSTER }}"

@@ -1,0 +1,57 @@
+{
+    "family": "Fastapi-task-ecs-ec2",
+    "taskRoleArn": "arn:aws:iam::440597412968:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::440597412968:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "containerDefinitions": [
+        {
+            "name": "fastapi-container-1",
+            "image": "longle997/test_project-fastapi-app:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "fastapi-container-1-8000-tcp",
+                    "containerPort": 8000,
+                    "hostPort": 8000,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                {
+                    "name": "APP_NAME",
+                    "value": "FastAPI PostgreSQL App"
+                },
+                {
+                    "name": "APP_VERSION",
+                    "value": "1.0.0"
+                },
+                {
+                    "name": "ENVIRONMENT",
+                    "value": "production"
+                }
+            ],
+            "secrets": [
+                {
+                    "name": "DATABASE_URL",
+                    "valueFrom": "arn:aws:ssm:ap-southeast-2:440597412968:parameter/fastapi/database-url"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/Fastapi-task-ecs-ec2",
+                    "awslogs-create-group": "true",
+                    "awslogs-region": "ap-southeast-2",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ],
+    "requiresCompatibilities": [
+        "EC2"
+    ],
+    "cpu": "1024",
+    "memory": "819"
+}
