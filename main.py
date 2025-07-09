@@ -24,7 +24,7 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "service": "fastapi-postgresql"}
+    return {"status": "healthy updated", "service": "fastapi-postgresql"}
 
 @app.get("/items", response_model=List[schemas.ItemResponse])
 def get_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
